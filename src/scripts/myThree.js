@@ -1,6 +1,8 @@
 import {THREE} from '../vendor';
 // import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import noise from './utils/perlinNoise';
+import babeCube from '../objects/babeCube.glb';
+import theNest from '../objects/theNest46.glb';
 
 const GLTFLoader = require('./gltfloader');
 
@@ -60,27 +62,55 @@ function onWindowResize(){
   // cameraControls(window.innerWidth,window.innerHeight);
 }
 // ====================== END SCENE SETUP ========================== //
+let cube;
+const loader = new THREE.GLTFLoader();
+loader.load(babeCube, (gltf) => {
+  cube = gltf.scene.children[0];
+  cube.rotateX(-Math.PI/2)
+  cube.scale.set(10,10,10)
 
-const ambient = new THREE.HemisphereLight(0xffffff, 0x000000)
+  scene.add(gltf.scene);
+})
+let sphereGeo = new THREE.SphereBufferGeometry(10,8,6);
+let sphereMat = new THREE.MeshPhongMaterial({color: 0xff0000});
+let sphere = new THREE.Mesh(sphereGeo,sphereMat);
+sphere.position.z = -10;
+scene.add(sphere);
+
+// let nest;
+// const loader = new THREE.GLTFLoader();
+// loader.load(theNest, (gltf) => {
+//   nest = gltf.scene.children[1];
+
+//   console.log(nest)
+//   scene.add(gltf.scene);
+//   console.log(scene)
+// })
+
+const ambient = new THREE.AmbientLight(0xffffff)
 scene.add(ambient);
 
-const cubeGeo = new THREE.BoxBufferGeometry(1,1,1);
-const cubeMat = new THREE.MeshLambertMaterial({color: 0xff0000});
-const cube = new THREE.Mesh(cubeGeo,cubeMat);
-cube.scale.set(20,20,20);
-scene.add(cube);
-console.log(cube)
+// const cubeGeo = new THREE.BoxBufferGeometry(1,1,1);
+// const cubeMat = new THREE.MeshLambertMaterial({color: 0xff0000});
+// const cube = new THREE.Mesh(cubeGeo,cubeMat);
+// cube.scale.set(20,20,20);
+// scene.add(cube);
+// console.log(cube)
 
 
 
 //=================== ANIMATION =====================//
-
+let delta = 0;
 const animate = function () {
   requestAnimationFrame( animate );
+  delta += .01;
     
-  cube.rotation.x += .01;
-  cube.rotation.y += .01;
-  cube.rotation.z += .0001;
+  cube.rotation.z -= .01;
+  cube.rotation.x -= .005;
+  // nest.rotation.x += .1
+  
+  sphere.position.x = Math.cos(delta)*20;
+  sphere.position.y = Math.sin(delta)*20;
 
   renderer.render( scene, camera );
 }
