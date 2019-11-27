@@ -85,7 +85,7 @@ loader.load(theNest, (gltf) => {
   nest = gltf.scene.children[1];
   nest.rotateX(Math.PI/2)
   nest.position.x = -10
-  nest.position.z = -21
+  nest.position.z = 0
   console.log(nest)
   scene.add(gltf.scene);
   console.log(scene)
