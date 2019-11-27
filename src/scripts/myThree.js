@@ -1,4 +1,5 @@
 import {THREE} from '../vendor';
+import {GodRaysEffect, RenderPass, EffectPass, EffectComposer, Initializable} from 'postprocessing';
 // import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import noise from './utils/perlinNoise';
 import babeCube from '../objects/babeCube.glb';
@@ -62,31 +63,36 @@ function onWindowResize(){
   // cameraControls(window.innerWidth,window.innerHeight);
 }
 // ====================== END SCENE SETUP ========================== //
-let cube;
-const loader = new THREE.GLTFLoader();
-loader.load(babeCube, (gltf) => {
-  cube = gltf.scene.children[0];
-  cube.rotateX(-Math.PI/2)
-  cube.scale.set(10,10,10)
-
-  scene.add(gltf.scene);
-})
-let sphereGeo = new THREE.SphereBufferGeometry(10,8,6);
-let sphereMat = new THREE.MeshPhongMaterial({color: 0xff0000});
-let sphere = new THREE.Mesh(sphereGeo,sphereMat);
-sphere.position.z = -10;
-scene.add(sphere);
-
-// let nest;
+// let cube;
 // const loader = new THREE.GLTFLoader();
-// loader.load(theNest, (gltf) => {
-//   nest = gltf.scene.children[1];
+// loader.load(babeCube, (gltf) => {
+//   cube = gltf.scene.children[0];
+//   cube.rotateX(-Math.PI/2)
+//   cube.scale.set(10,10,10)
 
-//   console.log(nest)
 //   scene.add(gltf.scene);
-//   console.log(scene)
+//   init();
 // })
+// let sphereGeo = new THREE.SphereBufferGeometry(10,8,6);
+// let sphereMat = new THREE.MeshPhongMaterial({color: 0xff0000});
+// let sphere = new THREE.Mesh(sphereGeo,sphereMat);
+// sphere.position.z = -10;
+// scene.add(sphere);
 
+let nest;
+const loader = new THREE.GLTFLoader();
+loader.load(theNest, (gltf) => {
+  nest = gltf.scene.children[1];
+  nest.rotateX(Math.PI/2)
+  nest.position.x = -10
+  nest.position.z = -21
+  console.log(nest)
+  scene.add(gltf.scene);
+  console.log(scene)
+  init()
+})
+
+function init(){
 const ambient = new THREE.AmbientLight(0xffffff)
 scene.add(ambient);
 
@@ -97,6 +103,29 @@ scene.add(ambient);
 // scene.add(cube);
 // console.log(cube)
 
+const moonGeo = new THREE.CircleGeometry(20,26);
+const moonMat = new THREE.MeshBasicMaterial({color: 0x777788});
+const moon = new THREE.Mesh( moonGeo, moonMat);
+moon.position.set(0, 0, -22.0);
+scene.add(moon);
+
+let godraysEffect = new GodRaysEffect(camera, moon,{
+  resolutionScale: .2,
+  density: .9,
+  decay: .97,
+  weight: .29,
+  samples: 60,
+  blur: false
+});
+
+let renderPass = new RenderPass(scene,camera);
+let effectPass = new EffectPass(camera,godraysEffect);
+effectPass.renderToScreen = true;
+
+let composer = new EffectComposer(renderer);
+composer.addPass(renderPass);
+composer.addPass(effectPass);
+
 
 
 //=================== ANIMATION =====================//
@@ -105,14 +134,17 @@ const animate = function () {
   requestAnimationFrame( animate );
   delta += .01;
     
-  cube.rotation.z -= .01;
-  cube.rotation.x -= .005;
+  // cube.rotation.z -= .01;
+  // cube.rotation.x -= .005;
   // nest.rotation.x += .1
   
-  sphere.position.x = Math.cos(delta)*20;
-  sphere.position.y = Math.sin(delta)*20;
+  // sphere.position.x = Math.cos(delta)*20;
+  // sphere.position.y = Math.sin(delta)*20;
 
-  renderer.render( scene, camera );
+  composer.render();
+  // renderer.render( scene, camera );
 }
 
 animate();
+}
+

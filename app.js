@@ -6,8 +6,8 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 
-app.set('views', path.join(__dirname, './src/views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'dist'));
+// app.set('view engine', 'html');
 app.use(express.static('dist'));
 
 // var imageArr = [];
@@ -18,9 +18,9 @@ app.use(express.static('dist'));
 //   return;
 // });
 
-app.get('/', (req,res)=>{
-  res.render('index');
-});
+// app.get('/', (req,res)=>{
+//   res.render('index');
+// });
 
 
 
