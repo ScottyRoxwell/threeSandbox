@@ -104,28 +104,28 @@ scene.add(ambient);
 // scene.add(cube);
 // console.log(cube)
 
-// const moonGeo = new THREE.CircleGeometry(20,26);
-// const moonMat = new THREE.MeshBasicMaterial({color: 0x777788});
-// const moon = new THREE.Mesh( moonGeo, moonMat);
-// moon.position.set(0, 0, -22.0);
-// scene.add(moon);
+const moonGeo = new THREE.CircleGeometry(20,26);
+const moonMat = new THREE.MeshBasicMaterial({color: 0x777788});
+const moon = new THREE.Mesh( moonGeo, moonMat);
+moon.position.set(0, 0, -22.0);
+scene.add(moon);
 
-// let godraysEffect = new GodRaysEffect(camera, moon,{
-//   resolutionScale: .2,
-//   density: .9,
-//   decay: .97,
-//   weight: .29,
-//   samples: 60,
-//   blur: false
-// });
+let godraysEffect = new GodRaysEffect(camera, moon,{
+  resolutionScale: .2,
+  density: .9,
+  decay: .97,
+  weight: .29,
+  samples: 60,
+  blur: false
+});
 
-// let renderPass = new RenderPass(scene,camera);
-// let effectPass = new EffectPass(camera,godraysEffect);
-// effectPass.renderToScreen = true;
+let renderPass = new RenderPass(scene,camera);
+let effectPass = new EffectPass(camera,godraysEffect);
+effectPass.renderToScreen = true;
 
-// let composer = new EffectComposer(renderer);
-// composer.addPass(renderPass);
-// composer.addPass(effectPass);
+let composer = new EffectComposer(renderer);
+composer.addPass(renderPass);
+composer.addPass(effectPass);
 
 
 
@@ -142,8 +142,8 @@ const animate = function () {
   // sphere.position.x = Math.cos(delta)*20;
   // sphere.position.y = Math.sin(delta)*20;
 
-  // composer.render();
-  renderer.render( scene, camera );
+  composer.render();
+  // renderer.render( scene, camera );
 }
 
 animate();
